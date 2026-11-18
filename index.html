@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบบันทึกการติดตามงานนักศึกษา</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #94bbe9;
+      --primary-hover: #7caad9;
+      --text-main: #4a4a4a;
+      --text-muted: #707070;
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 30px rgba(148, 187, 233, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Prompt', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .form-container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 680px;
+      border-radius: 20px;
+      padding: 36px 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 16px;
+      border-bottom: 2px dashed #f0e6ff;
+    }
+
+    .form-header h1 {
+      font-size: 1.6rem;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .form-label .required {
+      color: #e63946;
+      margin-left: 4px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background-color: #fafafa;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .form-control:focus {
+      background-color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(148, 187, 233, 0.25);
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      background-color: #fafafa;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .radio-option:hover {
+      background-color: #f0f7ff;
+      border-color: var(--primary);
+    }
+
+    .radio-option input[type="radio"] {
+      margin-right: 12px;
+      accent-color: #6366f1;
+      cursor: pointer;
+    }
+
+    .radio-option label {
+      font-size: 0.92rem;
+      color: var(--text-main);
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .detail-input-container {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .detail-input-container.active {
+      display: block;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #ffffff;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+      background-color: #93c5fd;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(147, 197, 253, 0.4);
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(147, 197, 253, 0.6);
+    }
+
+    .btn-submit:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .alert-success {
+      display: none;
+      margin-top: 20px;
+      padding: 14px;
+      background-color: #d1fae5;
+      color: #065f46;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <div class="form-header">
+      <h1>ระบบบันทึกการติดตามงานนักศึกษา</h1>
+    </div>
+
+    <form id="trackingForm" onsubmit="handleSubmit(event)">
+
+      <!-- 1. ชื่อ-นามสกุลผู้บันทึก -->
+      <div class="form-group">
+        <label class="form-label">1. ชื่อ-นามสกุลผู้บันทึก <span class="required">*</span></label>
+        <select class="form-control" id="recorderName" required>
+          <option value="" disabled selected>-- เลือกชื่อ-นามสกุล --</option>
+          <option value="นางสาววิมลณัฐ วะรุณพงษ์">นางสาววิมลณัฐ วะรุณพงษ์</option>
+          <option value="นางสาวมนทิชา อุพลรัมย์">นางสาวมนทิชา อุพลรัมย์</option>
+          <option value="นายอัครเดช อาจปะระ">นายอัครเดช อาจปะระ</option>
+          <option value="นายพีรยุทธ สร้อยเสน">นายพีรยุทธ สร้อยเสน</option>
+        </select>
+      </div>
+
+      <!-- 2. เล้าที่เข้าติดตาม -->
+      <div class="form-group">
+        <label class="form-label">2. เล้าที่เข้าติดตาม <span class="required">*</span></label>
+        <input type="text" class="form-control" id="houseNumber" placeholder="กรอกชื่อเล้าหรือหมายเลขเล้า" required>
+      </div>
+
+      <!-- 3. หัวข้อการติดตามงาน -->
+      <div class="form-group">
+        <label class="form-label">3. หัวข้อการติดตามงาน <span class="required">*</span></label>
+        <div class="radio-group">
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ขนมูลไก่" required><label>ขนมูลไก่</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ฆ่าแมลงปีกแข็งรอบแรก (เทมพริด 1:400)"><label>ฆ่าแมลงปีกแข็งรอบแรก (เทมพริด 1:400)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="กวาดพื้นชั้นลอย"><label>กวาดพื้นชั้นลอย</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="แช่ท่อ-ฟลัชล้างท่อรอบแรก (Multi-100)"><label>แช่ท่อ-ฟลัชล้างท่อรอบแรก (Multi-100)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ล้างเล้ารอบแรก(ตรวจเช็คความสะอาด)"><label>ล้างเล้ารอบแรก(ตรวจเช็คความสะอาด)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ฆ่า่เชื้อรอบแรก (BKC+Ucarcide+น้ำ) (1:125)"><label>ฆ่า่เชื้อรอบแรก (BKC+Ucarcide+น้ำ) (1:125)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ล้างเล้ารอบสอง ฉีดโฟม+ขัดไลน์น้ำ-ไลน์อาหาร (Exa clean 1:100)"><label>ล้างเล้ารอบสอง ฉีดโฟม+ขัดไลน์น้ำ-ไลน์อาหาร (Exa clean 1:100)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="แช่ถาด-ล้างถาดอาหาร (Exa clean 1:100)"><label>แช่ถาด-ล้างถาดอาหาร (Exa clean 1:100)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="กวาดเศษแกลบ เศษแมลง จุดน้ำขัง"><label>กวาดเศษแกลบ เศษแมลง จุดน้ำขัง</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ฆ่าเชื้อรอบสอง (BKC+Ucarcide+น้ำ) (1:125)"><label>ฆ่าเชื้อรอบสอง (BKC+Ucarcide+น้ำ) (1:125)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ฆ่าเชื้อรอบสาม (BKC+Ucarcide+น้ำ) (1:125)"><label>ฆ่าเชื้อรอบสาม (BKC+Ucarcide+น้ำ) (1:125)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="อบฟอร์มาลีนถังไซโล (ฟอร์มาลีน 40% 5 ลิตร/เครื่อง)"><label>อบฟอร์มาลีนถังไซโล (ฟอร์มาลีน 40% 5 ลิตร/เครื่อง)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="วางยาเบื่อหนู (ราคูมิน 1:19 วางจุดละ 50-100 กรัม)"><label>วางยาเบื่อหนู (ราคูมิน 1:19 วางจุดละ 50-100 กรัม)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ฆ่าแมลงปีกแข็งรอบสอง (เทมพริด 1:400)"><label>ฆ่าแมลงปีกแข็งรอบสอง (เทมพริด 1:400)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ฆ่าเชื้อแกลบ  (BKC+Ucarcide+น้ำ) (1:125)"><label>ฆ่าเชื้อแกลบ  (BKC+Ucarcide+น้ำ) (1:125)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="ฆ่าเชื้อแกลบด้วยฟอร์มาลีน (ฟอร์มาลีน 40% 1:11.5)"><label>ฆ่าเชื้อแกลบด้วยฟอร์มาลีน (ฟอร์มาลีน 40% 1:11.5)</label></div>
+          <div class="radio-option"><input type="radio" name="taskTopic" value="อบฟอร์มาลีนโรงเรือน  (ฟอร์มาลีน 40% 5 ลิตร/เครื่อง)"><label>อบฟอร์มาลีนโรงเรือน  (ฟอร์มาลีน 40% 5 ลิตร/เครื่อง)</label></div>
+        </div>
+      </div>
+
+      <!-- 4. การวัดผล -->
+      <div class="form-group">
+        <label class="form-label">4. การวัดผล <span class="required">*</span></label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" name="evaluation" value="ผ่าน" required onclick="toggleDetail('eval_detail', false)">
+            <label>ผ่าน</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" name="evaluation" value="ไม่ผ่าน" onclick="toggleDetail('eval_detail', true)">
+            <label>ไม่ผ่าน</label>
+          </div>
+        </div>
+        <div id="eval_detail" class="detail-input-container">
+          <input type="text" class="form-control" id="eval_detail_input" placeholder="ระบุรายละเอียด (กรณีไม่ผ่าน)">
+        </div>
+      </div>
+
+      <!-- 5. ปัญหาที่พบ -->
+      <div class="form-group">
+        <label class="form-label">5. ปัญหาที่พบ <span class="required">*</span></label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" name="problem" value="ผ่าน" required onclick="toggleDetail('prob_detail', false)">
+            <label>ผ่าน (ไม่มีปัญหา)</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" name="problem" value="ไม่ผ่าน" onclick="toggleDetail('prob_detail', true)">
+            <label>ไม่ผ่าน (มีปัญหา)</label>
+          </div>
+        </div>
+        <div id="prob_detail" class="detail-input-container">
+          <input type="text" class="form-control" id="prob_detail_input" placeholder="ระบุรายละเอียดปัญหาที่พบ">
+        </div>
+      </div>
+
+      <!-- 6. ภาพการติดตามงาน -->
+      <div class="form-group">
+        <label class="form-label">6. ภาพการติดตามงาน</label>
+        <input type="file" class="form-control" id="imageFile" accept="image/*">
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn-submit">บันทึกข้อมูล</button>
+    </form>
+
+    <div id="alert_success" class="alert-success">
+      ✨ บันทึกข้อมูลสำเร็จเรียบร้อยแล้ว!
+    </div>
+  </div>
+
+  <script>
+    function toggleDetail(containerId, show) {
+      const container = document.getElementById(containerId);
+      const input = container.querySelector('input');
+      if (show) {
+        container.classList.add('active');
+        input.required = true;
+      } else {
+        container.classList.remove('active');
+        input.required = false;
+        input.value = '';
+      }
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = "กำลังบันทึกข้อมูล...";
+
+      // ดึงค่าตัวเลือกแบบ Radio
+      const taskTopic = document.querySelector('input[name="taskTopic"]:checked').value;
+      
+      let evalVal = document.querySelector('input[name="evaluation"]:checked').value;
+      if(evalVal === "ไม่ผ่าน") {
+        evalVal = "ไม่ผ่าน: " + document.getElementById('eval_detail_input').value;
+      }
+
+      let probVal = document.querySelector('input[name="problem"]:checked').value;
+      if(probVal === "ไม่ผ่าน") {
+        probVal = "ไม่ผ่าน: " + document.getElementById('prob_detail_input').value;
+      }
+
+      const fileInput = document.getElementById('imageFile');
+      let payload = {
+        recorderName: document.getElementById('recorderName').value,
+        houseNumber: document.getElementById('houseNumber').value,
+        taskTopic: taskTopic,
+        evaluation: evalVal,
+        problem: probVal,
+        imageFile: "",
+        imageName: "",
+        imageMimeType: ""
+      };
+
+      // แปลงไฟล์รูปภาพเป็น Base64 (ถ้ามีการเลือกรูป)
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const base64Data = await toBase64(file);
+        payload.imageFile = base64Data.split(',')[1];
+        payload.imageName = file.name;
+        payload.imageMimeType = file.type;
+      }
+
+      // ⚠️ แทนที่ URL ด้านล่างด้วย URL จาก Google Apps Script Web App ของคุณ
+      const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL";
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors", // ป้องกันปัญหา CORS
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // แสดงผลสำเร็จ
+        document.getElementById('trackingForm').reset();
+        document.getElementById('eval_detail').classList.remove('active');
+        document.getElementById('prob_detail').classList.remove('active');
+        
+        const alertBox = document.getElementById('alert_success');
+        alertBox.style.display = 'block';
+        setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+
+      } catch (error) {
+        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
+        console.error(error);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "บันทึกข้อมูล";
+      }
+    }
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  </script>
+</body>
+</html>
